@@ -145,7 +145,7 @@ def bmove(fmove):
         smove = text[9:13]
         hint = text[21:25]
         if maxchess.addTextMove(smove) != True :
-                        stxt = "e"+ str(maxchess.getReason())+move
+                        stxt = "e"+ str(maxchess.getReason())+smove
                         maxchess.printBoard()
                         sendboard(stxt)
 

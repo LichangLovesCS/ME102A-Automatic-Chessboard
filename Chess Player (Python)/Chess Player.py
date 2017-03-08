@@ -14,13 +14,11 @@
 
 # initiate chessboard
 import subprocess
-
 import serial
+
 from ChessBoard import ChessBoard
-
-maxchess = ChessBoard()
+Boards = ChessBoard()
 ser = serial.Serial('COM8', 9600)
-
 # initiate stockfish chess engine
 
 engine = subprocess.Popen(
@@ -66,8 +64,15 @@ def sget():
 def getboard():
     """ gets a text string from the board """
     btxt = raw_input("\n Enter a board message: ").lower()
-    ser.write(btxt[-4:])
-    return btxt
+    move = btxt
+    lastmove = Boards.getLastTextMove()
+    if lastmove is not None:
+        move = move + lastmove[-2:]
+    else:
+        move = move + "oo"
+    print move[1:]
+    ser.write(move[1:])
+    return btxt, move
 
 
 def sendboard(stxt):
@@ -90,30 +95,31 @@ def newgame():
     put('uci')
     get()
     put('ucinewgame')
-    maxchess.resetBoard()
+    Boards.resetBoard()
     fmove = ""
     return fmove
 
 
-def bmove(fmove):
+def bmove(fmove, move):
     """ assume we get a command of the form ma1a2 from board"""
     fmove = fmove
+    move = move
     # Get a move from the board
     brdmove = bmessage[1:5].lower()
     # now validate move
     # if invalid, get reason & send back to board
-    #  maxchess.addTextMove(move)
-    if maxchess.addTextMove(brdmove) == False:
-        etxt = "error" + str(maxchess.getReason()) + brdmove
-        maxchess.printBoard()
+    #  Boards.addTextMove(move)
+    if Boards.addTextMove(brdmove) == False:
+        etxt = "error" + str(Boards.getReason()) + brdmove
+        Boards.printBoard()
         sendboard(etxt)
         return fmove
 
     # elif valid  make the move and send Fen to board
 
     else:
-        maxchess.printBoard()
-        # maxfen = maxchess.getFEN()
+        Boards.printBoard()
+        # maxfen = Boards.getFEN()
         # sendboard(maxfen)
         # remove line below when working
         raw_input("\n\nPress the enter key to continue")
@@ -147,9 +153,9 @@ def bmove(fmove):
         print (text)
         smove = text[9:13]
         hint = text[21:25]
-        if maxchess.addTextMove(smove) != True:
-            stxt = "e" + str(maxchess.getReason()) + move
-            maxchess.printBoard()
+        if Boards.addTextMove(smove) != True:
+            stxt = "e" + str(Boards.getReason()) + smove
+            Boards.printBoard()
             sendboard(stxt)
 
         else:
@@ -157,10 +163,13 @@ def bmove(fmove):
             fmove = temp + " " + smove
             stx = smove + hint
             sendboard(stx)
-            maxchess.printBoard()
-            # maxfen = maxchess.getFEN()
+            Boards.printBoard()
+            # maxfen = Boards.getFEN()
             print ("computer move: " + smove)
-            ser.write(smove)
+            if brdmove is not None:
+                move = smove + brdmove[-2:]
+            print move
+            ser.write(move)
             return fmove
 
 
@@ -177,14 +186,15 @@ fmove = newgame()
 while True:
 
     # Get  message from board
-    bmessage = getboard()
+    bmessage, move = getboard()
     # Message options   Move, Newgame, level, style
     code = bmessage[0]
 
     # decide which function to call based on first letter of txt
     fmove = fmove
+    move = move
     if code == 'm':
-        fmove = bmove(fmove)
+        fmove = bmove(fmove, move)
     elif code == 'n':
         newgame()
     elif code == 'l':

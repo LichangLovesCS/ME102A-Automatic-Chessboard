@@ -9,7 +9,6 @@
 from copy import deepcopy
 from pprint import pprint
 
-
 class ChessBoard:
     # Color values
     WHITE = 0
@@ -1327,7 +1326,6 @@ class ChessBoard:
         """
         if self._state_stack_pointer <= 1:  # No move has been done at thos pointer
             return None
-
         self.undo()
         move = self._moves[self._state_stack_pointer - 1]
         res = self._formatTextMove(move, format)
