@@ -558,7 +558,7 @@ class ChessBoard:
             self._cur_move[3] = True
 
         str = self.toStr(fromPos, toPos)
-        # str.insert(0,"n")
+        str.insert(0,"p")
         print str
         ser.write(str)
         self._board[toPos[1]][toPos[0]] = p
@@ -581,7 +581,7 @@ class ChessBoard:
             self._fifty = 0
             self._cur_move[3] = True
         str = self.toStr(fromPos, toPos)
-        # str.insert(0,"n")
+        str.insert(0,"n")
         print str
         ser.write(str)
         self._board[toPos[1]][toPos[0]] = self._board[fromPos[1]][fromPos[0]]
@@ -638,13 +638,14 @@ class ChessBoard:
                 self._fifty = 0
                 self._cur_move[3] = True
 
-            str = self.toStr(fromPos, toPos)
-            # str.insert(0,"n")
-            print str
-            ser.write(str)
+
             self._board[toPos[1]][toPos[0]] = self._board[fromPos[1]][fromPos[0]]
             self._board[fromPos[1]][fromPos[0]] = "."
 
+        str = self.toStr(fromPos, toPos)
+        str.insert(0,"k")
+        print str
+        ser.write(str)
         self.updateKingLocations()
         return True
 
@@ -664,7 +665,7 @@ class ChessBoard:
             self._cur_move[3] = True
 
         str = self.toStr(fromPos, toPos)
-        # str.insert(0,"n")
+        str.insert(0,"q")
         print str
         ser.write(str)
         self._board[toPos[1]][toPos[0]] = self._board[fromPos[1]][fromPos[0]]
@@ -686,7 +687,7 @@ class ChessBoard:
             self._cur_move[3] = True
 
         str = self.toStr(fromPos, toPos)
-        # str.insert(0,"n")
+        str.insert(0,"b")
         print str
         ser.write(str)
         self._board[toPos[1]][toPos[0]] = self._board[fromPos[1]][fromPos[0]]
@@ -721,7 +722,7 @@ class ChessBoard:
             self._cur_move[3] = True
 
         str = self.toStr(fromPos, toPos)
-        # str.insert(0,"n")
+        str.insert(0,"r")
         print str
         ser.write(str)
         self._board[toPos[1]][toPos[0]] = self._board[fromPos[1]][fromPos[0]]
