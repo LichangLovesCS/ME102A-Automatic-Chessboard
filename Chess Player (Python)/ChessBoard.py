@@ -8,6 +8,12 @@
 
 from copy import deepcopy
 from pprint import pprint
+import serial
+import numpy as np
+import time
+
+ser = serial.Serial('COM8', 9600)
+
 
 class ChessBoard:
     # Color values
@@ -84,6 +90,53 @@ class ChessBoard:
 
     def __init__(self):
         self.resetBoard()
+
+    def center(self):
+        cent = "no"
+        x = 0
+        x = self.getMoveCount()
+        if x == 0:
+            cent = raw_input("\n Do You Need To Center: ").lower()
+        if cent == "yes":
+            ser.write("cent")
+            time.sleep(2)
+            ser.write("cent")
+            time.sleep(2)
+            ser.write("cent")
+            time.sleep(2)
+            ser.close()
+            time.sleep(1)
+            ser.open()
+
+    def toStr(self, fromPos, toPos):
+        str = "oooooo"
+        str = list(str)
+        xl = 0
+        yl = 2
+        dx = (("a", 0), ("b", 1), ("c", 2), ("d", 3), ("e", 4), ("f", 5), ("g", 6), ("h", 7))
+        dy = (("1", 7), ("2", 6), ("3", 5), ("4", 4), ("5", 3), ("6", 2), ("7", 1), ("8", 0))
+        definex = dict((y, x) for x, y in dx)
+        definey = dict((y, x) for x, y in dy)
+        for i in fromPos:
+            if xl == 0:
+                str[xl] = definex[i]
+            elif xl == 1:
+                str[xl] = definey[i]
+            xl += 1
+
+        for i in toPos:
+            if yl == 2:
+                str[yl] = definex[i]
+            elif yl == 3:
+                str[yl] = definey[i]
+            yl += 1
+
+        lastmove = self.getLastTextMove()
+
+        if lastmove is not None:
+            str[-2] = lastmove[-2]
+            str[-1] = lastmove[-1]
+        return str
 
     def state2str(self):
 
@@ -504,6 +557,10 @@ class ChessBoard:
         if self._board[toPos[1]][toPos[0]] != '.':
             self._cur_move[3] = True
 
+        str = self.toStr(fromPos, toPos)
+        # str.insert(0,"n")
+        print str
+        ser.write(str)
         self._board[toPos[1]][toPos[0]] = p
         self._board[fromPos[1]][fromPos[0]] = "."
 
@@ -523,7 +580,10 @@ class ChessBoard:
         else:
             self._fifty = 0
             self._cur_move[3] = True
-
+        str = self.toStr(fromPos, toPos)
+        # str.insert(0,"n")
+        print str
+        ser.write(str)
         self._board[toPos[1]][toPos[0]] = self._board[fromPos[1]][fromPos[0]]
         self._board[fromPos[1]][fromPos[0]] = "."
         return True
@@ -578,6 +638,10 @@ class ChessBoard:
                 self._fifty = 0
                 self._cur_move[3] = True
 
+            str = self.toStr(fromPos, toPos)
+            # str.insert(0,"n")
+            print str
+            ser.write(str)
             self._board[toPos[1]][toPos[0]] = self._board[fromPos[1]][fromPos[0]]
             self._board[fromPos[1]][fromPos[0]] = "."
 
@@ -599,6 +663,10 @@ class ChessBoard:
             self._fifty = 0
             self._cur_move[3] = True
 
+        str = self.toStr(fromPos, toPos)
+        # str.insert(0,"n")
+        print str
+        ser.write(str)
         self._board[toPos[1]][toPos[0]] = self._board[fromPos[1]][fromPos[0]]
         self._board[fromPos[1]][fromPos[0]] = "."
         return True
@@ -617,6 +685,10 @@ class ChessBoard:
             self._fifty = 0
             self._cur_move[3] = True
 
+        str = self.toStr(fromPos, toPos)
+        # str.insert(0,"n")
+        print str
+        ser.write(str)
         self._board[toPos[1]][toPos[0]] = self._board[fromPos[1]][fromPos[0]]
         self._board[fromPos[1]][fromPos[0]] = "."
         return True
@@ -648,6 +720,10 @@ class ChessBoard:
             self._fifty = 0
             self._cur_move[3] = True
 
+        str = self.toStr(fromPos, toPos)
+        # str.insert(0,"n")
+        print str
+        ser.write(str)
         self._board[toPos[1]][toPos[0]] = self._board[fromPos[1]][fromPos[0]]
         self._board[fromPos[1]][fromPos[0]] = "."
         return True
@@ -752,7 +828,7 @@ class ChessBoard:
             if not check:
                 check = ""
             res = "%s%s%s%s%s%s%s%s" % (
-            piece, files[fpos[0]], ranks[fpos[1]], tc, files[tpos[0]], ranks[tpos[1]], pt, check)
+                piece, files[fpos[0]], ranks[fpos[1]], tc, files[tpos[0]], ranks[tpos[1]], pt, check)
         elif format == self.SAN:
 
             if special == self.KING_CASTLE_MOVE:
