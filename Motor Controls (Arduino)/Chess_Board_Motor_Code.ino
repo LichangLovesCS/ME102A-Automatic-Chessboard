@@ -315,13 +315,13 @@ if (mark == 0 && changex == 2 && changey == 1){
   steppery.move(100);}
 
 if (mark == 1 && changex == -1 && changey == 2){
-  steppery.move(400);}
+  steppery.move(-400);}
 if (mark == 1 && changex == 1 && changey == 2){
-  steppery.move(400);}
+  steppery.move(-400);}
 if (mark == 1 && changex == -1 && changey == -2){         //step 2
-  steppery.move(-400);}
+  steppery.move(400);}
 if (mark == 1 && changex == 1 && changey == -2){
-  steppery.move(-400);}
+  steppery.move(400);}
 if (mark == 1 && changex == -2 && changey == -1){
   stepperx.move(-400);}
 if (mark == 1 && changex == -2 && changey == 1){
@@ -393,9 +393,4 @@ void loop()
         movepiece(str2, 90, t2);}
         else if (str == "cent"){center();}
 
-}                    
-
-
-
- 
-
+}
