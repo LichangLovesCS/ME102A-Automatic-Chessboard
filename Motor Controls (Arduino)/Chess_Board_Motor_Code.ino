@@ -231,14 +231,132 @@ void movepiece(String x, int deg, int t){
 
 
 
-    while (y < t){
+    while (y < (t+200)){
       y = y+1;
       delay(1);
       stepperx.run();
       steppery.run();
-      if (y == (t-(t/5))){
-        myservo1.write(deg);}
+      if (y == t){delay(500);
+        myservo1.write(deg); delay(1000);}
     }
+}
+
+
+void knight(String str, int mark){
+// str = "n" + "cp" + "moveto" + "prev pos"
+String strx = "oo";
+String stry = "oo";
+int xpos[] = {0, 0};
+int ypos[] = {0, 0};
+strx[0] = str[1];
+strx[1] = str[3];
+stry[0] = str[2];
+stry[1] = str[4];
+int x = 0;
+int y = 0;
+for (int i = 0; i<2; i++){
+    if (strx[i] == 'a'){
+      xpos[i] = 1;}
+    if (strx[i] == 'b'){
+      xpos[i] = 2;}
+    if (strx[i] == 'c'){
+      xpos[i] = 3;}
+    if (strx[i] == 'd'){
+      xpos[i] = 4;}
+    if (strx[i] == 'e'){
+      xpos[i] = 5;}
+    if (strx[i] == 'f'){
+      xpos[i] = 6;}
+    if (strx[i] == 'g'){
+      xpos[i] = 7;}
+    if (strx[i] == 'h'){
+      xpos[i] = 8;}
+    if (stry[i] == '1'){
+      ypos[i] = 1;}
+    if (stry[i] == '2'){
+      ypos[i] = 2;}
+    if (stry[i] == '3'){
+      ypos[i] = 3;}
+    if (stry[i] == '4'){
+      ypos[i] = 4;}
+    if (stry[i] == '5'){
+      ypos[i] = 5;}
+    if (stry[i] == '6'){
+      ypos[i] = 6;}
+    if (stry[i] == '7'){
+      ypos[i] = 7;}
+    if (stry[i] == '8'){
+      ypos[i] = 8;}
+}
+
+int changex = xpos[1] - xpos[0];
+int changey = ypos[1] - ypos[0];
+
+
+Serial.println(changex);
+Serial.println(changey);
+
+if (mark == 0){myservo1.write(0); delay(500);}
+if (mark == 0 && changex == -1 && changey == 2){
+  stepperx.move(-100);}
+if (mark == 0 && changex == -1 && changey == -2){
+  stepperx.move(-100);}
+if (mark == 0 && changex == -2 && changey == -1){
+  steppery.move(-100);}
+if (mark == 0 && changex == 2 && changey == -1){            // step 1
+  steppery.move(-100);}
+if (mark == 0 && changex == 1 && changey == 2){
+  stepperx.move(100);}
+if (mark == 0 && changex == 1 && changey == -2){
+  stepperx.move(100);}
+if (mark == 0 && changex == -2 && changey == 1){
+  steppery.move(100);}
+if (mark == 0 && changex == 2 && changey == 1){
+  steppery.move(100);}
+
+if (mark == 1 && changex == -1 && changey == 2){
+  steppery.move(400);}
+if (mark == 1 && changex == 1 && changey == 2){
+  steppery.move(400);}
+if (mark == 1 && changex == -1 && changey == -2){         //step 2
+  steppery.move(-400);}
+if (mark == 1 && changex == 1 && changey == -2){
+  steppery.move(-400);}
+if (mark == 1 && changex == -2 && changey == -1){
+  stepperx.move(-400);}
+if (mark == 1 && changex == -2 && changey == 1){
+  stepperx.move(-400);}
+if (mark == 1 && changex == 2 && changey == -1){
+  stepperx.move(400);}
+if (mark == 1 && changex == 2 && changey == 1){
+  stepperx.move(400);}
+
+if (mark == 2 && changex == -2 && changey == -1){
+  steppery.move(-100);}
+if (mark == 2 && changex == 2 && changey == -1){
+  steppery.move(-100);}
+if (mark == 2 && changex == 2 && changey == 1){         //step 3
+  steppery.move(100);}
+if (mark == 2 && changex == -2 && changey == 1){
+  steppery.move(100);}
+if (mark == 2 && changex == -1 && changey == 2){
+  stepperx.move(-100);}
+if (mark == 2 && changex == -1 && changey == -2){
+  stepperx.move(-100);}
+if (mark == 2 && changex == 1 && changey == 2){
+  stepperx.move(100);}
+if (mark == 2 && changex == 1 && changey == -2){
+  stepperx.move(100);}
+
+while (y < 500){
+  y = y+1;
+  delay(1);
+  stepperx.run();
+  steppery.run();}
+
+
+if (mark == 2){delay(500); myservo1.write(90); delay(500);}
+
 }
 
 void loop()
@@ -252,22 +370,29 @@ void loop()
     if(Serial.available() > 0)
     {
         str = Serial.readStringUntil('\n');
-        str1[0] = str[0];
-        str1[1] = str[1];
-        str2[0] = str[2];
-        str2[1] = str[3];
-        str3[0] = str[4];
-        str3[1] = str[5];}
-        if (str[5] == 'o'){
+        str1[0] = str[1];
+        str1[1] = str[2];
+        str2[0] = str[3];
+        str2[1] = str[4];
+        str3[0] = str[5];
+        str3[1] = str[6];}
+        if (str[0] == 'n'){
+          movepiece(str1, 0, 2500);
+          knight(str, 0); //step1
+          knight(str, 1); //step2
+          knight(str, 2); //step3
+          }
+        else if (str[5] == 'o'){
         t1 = change(str1, str2);
         movepiece(str1, 0, 2500);
         movepiece(str2, 90, t1);}
-        else if (str.length() == 6){
+        else if (str.length() == 7){
         t1 = change(str1, str3);
         t2 = change(str1, str2);
         movepiece(str1, 0, t1);
         movepiece(str2, 90, t2);}
         else if (str == "cent"){center();}
+
 }                    
 
 

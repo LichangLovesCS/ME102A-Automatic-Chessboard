@@ -167,8 +167,8 @@ def put(command):
 
 # assume new game
 print ("\n Chess Program \n")
-skill = "10"
-movetime = "600"
+skill = "1"
+movetime = "60"
 fmove = newgame()
 while True:
     # Get  message from board
