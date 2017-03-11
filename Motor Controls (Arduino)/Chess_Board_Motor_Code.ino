@@ -302,17 +302,17 @@ if (mark == 0 && changex == -1 && changey == 2){
 if (mark == 0 && changex == -1 && changey == -2){
   stepperx.move(-100);}
 if (mark == 0 && changex == -2 && changey == -1){
-  steppery.move(-100);}
+  steppery.move(100);}
 if (mark == 0 && changex == 2 && changey == -1){            // step 1
-  steppery.move(-100);}
+  steppery.move(100);}
 if (mark == 0 && changex == 1 && changey == 2){
   stepperx.move(100);}
 if (mark == 0 && changex == 1 && changey == -2){
   stepperx.move(100);}
 if (mark == 0 && changex == -2 && changey == 1){
-  steppery.move(100);}
+  steppery.move(-100);}
 if (mark == 0 && changex == 2 && changey == 1){
-  steppery.move(100);}
+  steppery.move(-100);}
 
 if (mark == 1 && changex == -1 && changey == 2){
   steppery.move(-400);}
@@ -332,13 +332,13 @@ if (mark == 1 && changex == 2 && changey == 1){
   stepperx.move(400);}
 
 if (mark == 2 && changex == -2 && changey == -1){
-  steppery.move(-100);}
+  steppery.move(100);}
 if (mark == 2 && changex == 2 && changey == -1){
-  steppery.move(-100);}
+  steppery.move(100);}
 if (mark == 2 && changex == 2 && changey == 1){         //step 3
-  steppery.move(100);}
+  steppery.move(-100);}
 if (mark == 2 && changex == -2 && changey == 1){
-  steppery.move(100);}
+  steppery.move(-100);}
 if (mark == 2 && changex == -1 && changey == 2){
   stepperx.move(-100);}
 if (mark == 2 && changex == -1 && changey == -2){
@@ -370,6 +370,7 @@ void loop()
     if(Serial.available() > 0)
     {
         str = Serial.readStringUntil('\n');
+        Serial.println(str);
         str1[0] = str[1];
         str1[1] = str[2];
         str2[0] = str[3];
