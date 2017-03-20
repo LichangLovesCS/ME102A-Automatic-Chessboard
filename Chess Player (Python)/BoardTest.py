@@ -8,11 +8,6 @@
 
 from copy import deepcopy
 from pprint import pprint
-import serial
-import numpy as np
-import time
-
-ser = serial.Serial('COM8', 9600)
 
 
 class ChessBoard:
@@ -88,77 +83,8 @@ class ChessBoard:
 
     _promotion_value = 0
 
-    _number_removed = 0
-
-    _turn_val = 0
-
-    _whitedict = []
-
-    _whitedeadloc = 0
-
-    _blackdict = []
-
-    _blackdeadloc = 0
-
-    _blackpawncount = 1
-    _blackrookcount = 1
-    _blackknightcount = 1
-    _blackbishopcount = 1
-
-    _whitepawncount = 1
-    _whiterookcount = 1
-    _whiteknightcount = 1
-    _whitebishopcount = 1
-
     def __init__(self):
         self.resetBoard()
-
-    def center(self):
-        cent = "no"
-        x = 0
-        x = self.getMoveCount()
-        if x == 0:
-            cent = raw_input("\n Do You Need To Center: ").lower()
-        if cent == "yes":
-            ser.write("cent")
-            time.sleep(2)
-            ser.write("cent")
-            time.sleep(2)
-            ser.write("cent")
-            time.sleep(2)
-            ser.close()
-            time.sleep(2)
-            ser.open()
-
-    def toStr(self, fromPos, toPos):
-        str = "oooooo"
-        str = list(str)
-        xl = 0
-        yl = 2
-        dx = (("a", 0), ("b", 1), ("c", 2), ("d", 3), ("e", 4), ("f", 5), ("g", 6), ("h", 7))
-        dy = (("1", 7), ("2", 6), ("3", 5), ("4", 4), ("5", 3), ("6", 2), ("7", 1), ("8", 0))
-        definex = dict((y, x) for x, y in dx)
-        definey = dict((y, x) for x, y in dy)
-        for i in fromPos:
-            if xl == 0:
-                str[xl] = definex[i]
-            elif xl == 1:
-                str[xl] = definey[i]
-            xl += 1
-
-        for i in toPos:
-            if yl == 2:
-                str[yl] = definex[i]
-            elif yl == 3:
-                str[yl] = definey[i]
-            yl += 1
-
-        lastmove = self.getLastTextMove()
-
-        if lastmove is not None:
-            str[-2] = lastmove[-2]
-            str[-1] = lastmove[-1]
-        return str
 
     def state2str(self):
 
@@ -219,8 +145,10 @@ class ChessBoard:
                        deepcopy(self._board),
                        deepcopy(self._ep)]
         self._three_rep_stack.append(three_state)
+
         state_str = self.state2str()
         self._state_stack.append(state_str)
+
         self._state_stack_pointer = len(self._state_stack)
 
     def pushMove(self):
@@ -239,8 +167,6 @@ class ChessBoard:
         return False
 
     def updateKingLocations(self):
-        x = 0
-        y = 0
         for y in range(0, 8):
             for x in range(0, 8):
                 if self._board[y][x] == "K":
@@ -379,7 +305,6 @@ class ChessBoard:
         return False
 
     # -----------------------------------------------------------------
-
     def traceValidMoves(self, fromPos, dirs, maxSteps=8):
         moves = []
         for d in dirs:
@@ -533,80 +458,6 @@ class ChessBoard:
 
         # -----------------------------------------------------------------------------------
 
-    # --------------------------------------------------------------------MOVE PIECES
-    def Serial(self, fromPos, toPos, char):
-        string = self.toStr(fromPos, toPos)
-        self._turn_val += 1
-        string.insert(0, char)
-        remove = self.check_remove(toPos)
-
-        if self._turn_val % 2 == 1 and remove == 1:
-            string += "w"
-            val = self._blackdict[-1][1]
-            if val < 1000:
-                string += "0"
-            string += str(val)
-        if self._turn_val % 2 == 0 and remove == 1:
-            string += "b"
-            val = self._whitedict[-1][1]
-            if val < 1000:
-                string += "0"
-            string += str(val)
-        if remove == 1:
-            string += "x"
-
-        ser.write(string)
-        print string
-
-    def check_remove(self, toPos):
-        cur_pos = self.state2str()
-        cur_pos = cur_pos[:64]
-        cur_pos = list(cur_pos)
-        cur_pos = np.reshape(cur_pos, (8, 8))
-        x = 0
-        y = 0
-        y = toPos[1]
-        x = toPos[0]
-        remove = 0
-        piece = cur_pos[y][x]
-        if piece != '.':
-            remove = 1
-            self._number_removed += 1
-            print "Number Removed:", self._number_removed
-            if piece.islower():
-                if piece == "p":
-                    piece = piece + str(self._blackpawncount)
-                    self._blackpawncount += 1
-                elif piece == "b":
-                    piece = piece + str(self._blackpawncount)
-                    self._blackbishopcount += 1
-                elif piece == "r":
-                    piece = piece + str(self._blackpawncount)
-                    self._blackrookcount += 1
-                elif piece == "n":
-                    piece = piece + str(self._blackpawncount)
-                    self._blackknightcount += 1
-                self._blackdeadloc += 200
-                self._blackdict.append((piece, self._blackdeadloc))
-                print self._blackdict
-            elif not piece.islower():
-                if piece == "P":
-                    piece = piece + str(self._whitepawncount)
-                    self._whitepawncount += 1
-                elif piece == "B":
-                    piece = piece + str(self._whitepawncount)
-                    self._whitebishopcount += 1
-                elif piece == "R":
-                    piece = piece + str(self._whitepawncount)
-                    self._whiterookcount += 1
-                elif piece == "N":
-                    piece = piece + str(self._whitepawncount)
-                    self._whiteknightcount += 1
-                self._whitedeadloc += 200
-                self._whitedict.append((piece, self._whitedeadloc))
-                print self._whitedict
-        return remove
-
     def movePawn(self, fromPos, toPos):
         moves, specialMoves = self.getValidPawnMoves(fromPos)
 
@@ -641,7 +492,7 @@ class ChessBoard:
             p = pc[pv - 1]
             self._cur_move[4] = p
             self._cur_move[6] = self.PROMOTION_MOVE
-            self._promotion_value = 0
+            # self._promotion_value = 0
         else:
             p = self._board[fromPos[1]][fromPos[0]]
 
@@ -654,9 +505,9 @@ class ChessBoard:
         if self._board[toPos[1]][toPos[0]] != '.':
             self._cur_move[3] = True
 
-        self.Serial(fromPos, toPos, "p")
         self._board[toPos[1]][toPos[0]] = p
         self._board[fromPos[1]][fromPos[0]] = "."
+
         self._fifty = 0
         return True
 
@@ -673,13 +524,12 @@ class ChessBoard:
         else:
             self._fifty = 0
             self._cur_move[3] = True
-        self.Serial(fromPos, toPos, "n")
+
         self._board[toPos[1]][toPos[0]] = self._board[fromPos[1]][fromPos[0]]
         self._board[fromPos[1]][fromPos[0]] = "."
         return True
 
     def moveKing(self, fromPos, toPos):
-        self.Serial(fromPos, toPos, "k")
         if self._turn == self.WHITE:
             c_row = 7
             k = "K"
@@ -738,10 +588,7 @@ class ChessBoard:
     def moveQueen(self, fromPos, toPos):
 
         moves = self.getValidQueenMoves(fromPos)
-        str = self.toStr(fromPos, toPos)
-        str.insert(0, "k")
-        print str
-        ser.write(str)
+
         if not toPos in moves:
             return False
 
@@ -753,7 +600,6 @@ class ChessBoard:
             self._fifty = 0
             self._cur_move[3] = True
 
-        self.Serial(fromPos, toPos, "q")
         self._board[toPos[1]][toPos[0]] = self._board[fromPos[1]][fromPos[0]]
         self._board[fromPos[1]][fromPos[0]] = "."
         return True
@@ -772,7 +618,6 @@ class ChessBoard:
             self._fifty = 0
             self._cur_move[3] = True
 
-        self.Serial(fromPos, toPos, "b")
         self._board[toPos[1]][toPos[0]] = self._board[fromPos[1]][fromPos[0]]
         self._board[fromPos[1]][fromPos[0]] = "."
         return True
@@ -803,7 +648,7 @@ class ChessBoard:
         else:
             self._fifty = 0
             self._cur_move[3] = True
-        self.Serial(fromPos, toPos, "r")
+
         self._board[toPos[1]][toPos[0]] = self._board[fromPos[1]][fromPos[0]]
         self._board[fromPos[1]][fromPos[0]] = "."
         return True
@@ -908,7 +753,7 @@ class ChessBoard:
             if not check:
                 check = ""
             res = "%s%s%s%s%s%s%s%s" % (
-                piece, files[fpos[0]], ranks[fpos[1]], tc, files[tpos[0]], ranks[tpos[1]], pt, check)
+            piece, files[fpos[0]], ranks[fpos[1]], tc, files[tpos[0]], ranks[tpos[1]], pt, check)
         elif format == self.SAN:
 
             if special == self.KING_CASTLE_MOVE:
@@ -947,6 +792,10 @@ class ChessBoard:
                 hint_f = files[fx]
             res = "%s%s%s%s%s%s%s%s" % (piece, hint_f, hint_r, tc, files[tpos[0]], ranks[tpos[1]], pt, check)
         return res
+
+    # ----------------------------------------------------------------------------
+    # PUBLIC METHODS
+    # ----------------------------------------------------------------------------
 
     def resetBoard(self):
         """
@@ -1186,7 +1035,7 @@ class ChessBoard:
 
     def getGameResult(self):
         """
-        Returns the for game over.
+        Returns the reason for game over.
         It can be the following reasons: 1=WHITE_WIN , 2=BLACK_WIN, 3=STALEMATE,4=FIFTY_MOVES_RULE,5=THREE_REPETITION_RULE.
         If game is not over this method returns zero(0).
         """
@@ -1496,3 +1345,5 @@ class ChessBoard:
             rank -= 1
         print "  +-----------------+"
         print "    A B C D E F G H"
+
+

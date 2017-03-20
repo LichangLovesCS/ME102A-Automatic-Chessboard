@@ -15,6 +15,7 @@
 # initiate chessboard
 import subprocess
 from ChessBoard import ChessBoard
+import numpy as np
 
 chessboard = ChessBoard()
 
@@ -188,7 +189,3 @@ while True:
         style()
     else:
         sendboard('error at option')
-
-
-
-

@@ -15,9 +15,9 @@
 # initiate chessboard
 import subprocess
 
-from ChessBoard import ChessBoard
+from BoardTest import ChessBoard
 
-maxchess = ChessBoard()
+chessboard = ChessBoard()
 
 
 # initiate stockfish chess engine
@@ -84,7 +84,7 @@ def newgame():
     put('uci')
     get ()
     put('ucinewgame')
-    maxchess.resetBoard()
+    chessboard.resetBoard()
     fmove=""
     return fmove
 
@@ -99,18 +99,18 @@ def bmove(fmove):
     brdmove = bmessage[1:5].lower()
     # now validate move
     # if invalid, get reason & send back to board
-      #  maxchess.addTextMove(move)
-    if maxchess.addTextMove(brdmove) == False :
-                        etxt = "error"+ str(maxchess.getReason())+brdmove
-                        maxchess.printBoard()
+      #  chessboard.addTextMove(move)
+    if chessboard.addTextMove(brdmove) == False :
+                        etxt = "error"+ str(chessboard.getReason())+brdmove
+                        chessboard.printBoard()
                         sendboard(etxt)
                         return fmove
                        
 #  elif valid  make the move and send Fen to board
     
     else:
-        maxchess.printBoard()
-        # maxfen = maxchess.getFEN()
+        chessboard.printBoard()
+        # maxfen = chessboard.getFEN()
         # sendboard(maxfen)
        # remove line below when working
         raw_input("\n\nPress the enter key to continue")
@@ -144,9 +144,9 @@ def bmove(fmove):
         print (text)
         smove = text[9:13]
         hint = text[21:25]
-        if maxchess.addTextMove(smove) != True :
-                        stxt = "e"+ str(maxchess.getReason())+smove
-                        maxchess.printBoard()
+        if chessboard.addTextMove(smove) != True :
+                        stxt = "e"+ str(chessboard.getReason())+smove
+                        chessboard.printBoard()
                         sendboard(stxt)
 
         else:
@@ -154,8 +154,8 @@ def bmove(fmove):
                         fmove =temp+" " +smove
                         stx = smove+hint      
                         sendboard(stx)
-                        maxchess.printBoard()
-                        # maxfen = maxchess.getFEN()
+                        chessboard.printBoard()
+                        # maxfen = chessboard.getFEN()
                         print ("computer move: " +smove)
                         return fmove
         
@@ -169,7 +169,7 @@ def put(command):
 # assume new game
 print ("\n Chess Program \n")
 skill = "10"
-movetime = "6000"
+movetime = "60"
 fmove = newgame()
 while True:
 

@@ -355,10 +355,30 @@ while (y < 500){
   steppery.run();}
 
 
-if (mark == 2){delay(500); myservo1.write(90); delay(500);}
+if (mark == 2){delay(500); myservo1.write(70); delay(500);}
 
 }
+void removepiece(int direct, int stp){
+  int y = 0;
+  int lr = 0;
+  if (direct < 100){lr = -1;}
+  if (direct > 100){lr = 1;}
+  Serial.println(lr);
+  if (stp == 1){steppery.move(-100);}
 
+  if (stp == 2){stepperx.moveTo(direct);}
+
+  if (stp == 3){steppery.moveTo(direct);}
+
+  if (stp == 4){stepperx.move(55 * lr);}
+
+  while (y < 1500){
+  y = y+1;
+  delay(1);
+  stepperx.run();
+  steppery.run();}
+
+}
 void loop()
 {
     String str;
@@ -367,6 +387,9 @@ void loop()
     String str3 = "oo";
     int t1 = 0;
     int t2 = 0;
+    int val = 0;
+    String Pos = "0000";
+    int posint = 0;
     if(Serial.available() > 0)
     {
         str = Serial.readStringUntil('\n');
@@ -377,10 +400,13 @@ void loop()
         str2[1] = str[4];
         str3[0] = str[5];
         str3[1] = str[6];}
-        if (str[0] == 'n'){
+        if (str[0] == 'n' && str.length() == 7){
           movepiece(str1, 0, 2500);
+          delay(200);
           knight(str, 0); //step1
+          delay(200);
           knight(str, 1); //step2
+          delay(200);
           knight(str, 2); //step3
           }
         else if (str[5] == 'o'){
@@ -394,4 +420,48 @@ void loop()
         movepiece(str2, 90, t2);}
         else if (str == "cent"){center();}
 
+
+        else if (str.length() == 13 && str[12] == 'x' && str[0] == 'n'){
+        myservo1.write(90);
+        t1 = change(str1, str3);
+        t2 = change(str1, str2);
+        movepiece(str2, 0, t1);
+        Pos = str.substring(8,12);
+        posint = Pos.toInt();
+        if (str[7] == 'b'){val = 55;}
+        else if (str[7] == 'w'){val = 1565;}
+        removepiece(val, 1);
+        removepiece(val, 2);
+        removepiece(posint, 3);
+        removepiece(val, 4);
+        myservo1.write(90);
+        delay(500);
+        movepiece(str1, 0, 2500);
+        delay(500);
+        knight(str, 0); //step1
+        delay(200);
+        knight(str, 1); //step2
+        delay(200);
+        knight(str, 2); //step3
+        myservo1.write(90);}
+
+
+        else if (str.length() == 13 && str[12] == 'x'){
+        myservo1.write(90);
+        t1 = change(str1, str3);
+        t2 = change(str1, str2);
+        movepiece(str2, 0, t1);
+        Pos = str.substring(8,12);
+        posint = Pos.toInt();
+        if (str[7] == 'b'){val = 55;}
+        else if (str[7] == 'w'){val = 1565;}
+        removepiece(val, 1);
+        removepiece(val, 2);
+        removepiece(posint, 3);
+        removepiece(val, 4);
+        myservo1.write(90);
+        delay(500);
+        movepiece(str1, 0, 2500); 
+        movepiece(str2, 0, t2);
+        myservo1.write(90);}
 }
