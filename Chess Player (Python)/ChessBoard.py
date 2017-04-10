@@ -14,6 +14,7 @@ import time
 
 ser = serial.Serial('COM8', 9600)
 
+## SEMI FINAL VERSION
 
 class ChessBoard:
     # Color values
@@ -736,12 +737,8 @@ class ChessBoard:
         return True
 
     def moveQueen(self, fromPos, toPos):
-
+        self.Serial(fromPos, toPos, "q")
         moves = self.getValidQueenMoves(fromPos)
-        str = self.toStr(fromPos, toPos)
-        str.insert(0, "k")
-        print str
-        ser.write(str)
         if not toPos in moves:
             return False
 
@@ -753,7 +750,6 @@ class ChessBoard:
             self._fifty = 0
             self._cur_move[3] = True
 
-        self.Serial(fromPos, toPos, "q")
         self._board[toPos[1]][toPos[0]] = self._board[fromPos[1]][fromPos[0]]
         self._board[fromPos[1]][fromPos[0]] = "."
         return True
