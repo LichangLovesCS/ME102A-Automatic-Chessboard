@@ -107,4 +107,3 @@ class chessCom:
 						validMoves.append([moveGrid,p[0],m,value,[]])
 		return validMoves	
 					
-				

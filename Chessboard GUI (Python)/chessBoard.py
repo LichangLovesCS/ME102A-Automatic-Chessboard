@@ -277,3 +277,4 @@ class chessBoard:
 			if not self.inCheck(temp,color):
 				return True
 		return False
+		
