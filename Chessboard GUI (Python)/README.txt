@@ -1,4 +1,4 @@
-To run: Navigate to the Chess directory/folder. 
+To run: 
 
 python3 GUIRunner.py
 
